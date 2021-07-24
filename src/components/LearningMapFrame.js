@@ -145,12 +145,6 @@ class LearningMapFrame extends Component {
             });
         }
     }
-    componentDidUpdate(prevProps) {
-        // 常見用法（別忘了比較 prop）：
-        if (this.props !== prevProps) {
-          this.forceUpdate();
-        }
-      }
     SetPath_ConceptIndex(method, index) {
         if (method == "add") {
             this.setState({
@@ -165,9 +159,19 @@ class LearningMapFrame extends Component {
         }
     }
     SetMapConsult(method){
-        if (method == "ask"){
+        if (method == "add"){
+            /*     正式的讓後端去取db資料，算出新的Json檔
+            fetch('http://localhost:8001/MapPreview/<Keyword>')     //跟後端連結去getJson
+            .then(function (res) {
+            //    console.log(res.json());
+                return res.json();
+            }).then(function(myJson) {
+                this.props.SetNewJson(myJson);
+                return myJson;
+            });
+            */
             this.setState({MapConsult: true});
-            console.log("SetMapConsult(true!!)");
+            
         } else if (method =="dont_ask") {
             console.log("SetMapConsult(false)!!)");
             this.setState({MapConsult:false });
@@ -181,6 +185,7 @@ class LearningMapFrame extends Component {
     render() {
         var HighlightConceptTextIndex = this.state.HoverVideoIndex == null ? [] : this.props.data.VideoSequence_ConceptInfo[this.state.HoverConceptIndex][this.state.HoverVideoIndex];
         // console.log("windowheight",window.innerHeight);
+        console.log (this.props.data);
         return (
             <div style={styles.container}>
                 {/* {this.props.data.search_info.key} */}
@@ -211,10 +216,14 @@ class LearningMapFrame extends Component {
                         SetHightlightWord={this.SetHightlightWord}
                     />
                 </div>
-                <div width={window.innerWidth - 50} height={window.innerHeight - 100}>
+                <div style={styles.Div}>
                     <Editor content = {this.state.content}
                             SetMapConsult = {this.SetMapConsult}
+                            SetNewJson = {this.props.SetNewJson}
                     />
+                    <button onClick={()=>this.SetMapConsult("add")}
+                            className="btn btn-primary btn-lg m-5">Show New Map</button>
+                
                     
                 </div>
                 <ConceptDetailPanel

@@ -80,45 +80,38 @@ class MapApprovPanel extends Component {
     constructor(props) {
         super(props);
         this.CloseOnClick = this.CloseOnClick.bind(this);
-        console.log("before getting, this.props.NewJson == ", this.props.NewJson);
+        this.ApproveClicked = this.ApproveClicked.bind(this);
+        //console.log("before getting, this.props.NewJson == ", this.props.NewJson);
     //for getting new json---------------------------------
-        var tmp=this;
-        fetch('https://appbackend-hci.herokuapp.com/GetJson/')     //跟後端連結去getJson
+        /*var tmp=this;
+        fetch('http://localhost:8001/GetJson/')     //跟後端連結去getJson
         .then(function (res) {
         //    console.log(res.json());
             return res.json();
         }).then(function(myJson) {
-            console.log(myJson);
             tmp.props.SetNewJson(myJson);
             return myJson;
           });
-        this.props.SetNewJson(tmp);
+        //this.props.SetNewJson(tmp);
         console.log("this.props.NewJson == ", this.props.NewJson);
-            
+        */
+    }
+    ApproveClicked(){
+        fetch('https://appbackend-hci.herokuapp.com/Update/<Keyword>')     //跟後端連結去getJson
+            .then(function (res) {
+            //    console.log(res.json());
+                return res.json();
+            }).then(function(myJson) {
+                this.props.SetNewJson(myJson);
+                this.props.SetVisJson(myJson);
+                return myJson;
+            });
+    }
         
-    //for drawing map-----------------------
-            //console.log("[graph]", ",", this.props.NewJson.search_info.key);
-            // console.log("cheeeee",this.props.data.concept_relationship.nodes);
-            // calcalate SentimentScoreRange [SentScoreMin,SentScoreMax];
-            /*var tmpList = [];
-            for (var e in this.props.NewJson.videos_info) {
-                tmpList.push(this.props.NewJson.videos_info[e].userFeedbackScore);
-            };
-            var tmpList2 = [];
-            for (var e in this.props.NewJson.concept_relationship.nodes) {
-                tmpList2.push(this.props.NewJson.concept_relationship.nodes[e].count);
-            };
-            // console.log("SentRange",[Math.min(...tmpList),Math.max(...tmpList)]);
-            // console.log("tmpList2",tmpList2);
-            SentRange = [Math.min(...tmpList), Math.max(...tmpList)];
-            ConceptRange = [Math.min(...tmpList2), Math.max(...tmpList2), tmpList2.reduce((a, b) => a + b, 0)];
-            console.log(this.props.NewJson);
-            */
-        }
     componentDidUpdate(prevProps) {
         // 常見用法（別忘了比較 prop）：
         if (this.props !== prevProps) {
-          this.forceUpdate();
+              this.forceUpdate();
         }
       }
       componentWillMount() {
@@ -143,32 +136,34 @@ class MapApprovPanel extends Component {
         this.props.SetMapConsult("dont_ask");
     }
     render() {
-
+        //console.log("this.props.NewJson = ", this.props.NewJson );
         if(this.props.MapConsult==true){
-            console.log(this.props.NewJson);
             return (
                 <div style = {styles.OuterContainer}>
                     {/* <Paper style={styles.paper2} elevation={13}> */}
                     <Paper style= {Object.assign({}, styles.paper2, {height:window.innerHeight-130})} elevation={13}>
                     <div style={styles.rootTitle}>
-                    {"Map Approval Consult"}
+                    <h1>Map Approval Consult</h1>
                     <IconButton style={styles.CloseBotton} color="inherit" aria-label="Close">
                         <CloseIcon onClick={this.CloseOnClick.bind(this)}/>
                     </IconButton>
                     </div>
                     <div style = {styles.paper2_UpperContainer}>
                         <div style={styles.content}>
-                            <button>Approve</button>
-                            <button onClick = {this.CloseOnClick}>Disprove</button>
+                            <button onClick = {this.ApproveClicked}
+                                    className="btn btn-primary btn-lg m-5">Approve</button>
+                            <button onClick = {this.CloseOnClick}
+                                    className="btn btn-danger btn-lg m-5">Disprove</button>
                         </div>
                         
                     </div>
                     <div height="5"><hr></hr></div>
                     <div style = {styles.paper2_BelowContainer}>
                         <Graph data={this.props.NewJson}
-                                width={window.innerWidth} height={window.innerHeight}
+                                width={(window.innerWidth)*2} height={window.innerHeight}
                                 SentRange={SentRange}
                                 ConceptRange={ConceptRange}
+                                src={"ApprovPanel"}
                             />
                     </div>
                     </Paper>  
@@ -184,6 +179,5 @@ class MapApprovPanel extends Component {
 }
 export default MapApprovPanel;
 
-//button 大一點，Dis紅色，Approve藍色
 //node 顏色要改，group=1 要改顏色
 //是是把圖畫小一點

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
-import * as d3 from 'd3';
+import * as d3 from "d3";
 import Node from './Node';
 import Link from './Link';
 import Drawer from '@material-ui/core/Drawer';
@@ -20,6 +20,13 @@ import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import { axisLeft } from 'd3';
 
 
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        databaseURL: "https://test-7916a-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    });
+    }else {
+    firebase.app(); // if already initialized, use that one
+}
 
 
 
@@ -56,18 +63,18 @@ const drag = () => {
 };
 
 function dragStarted(d) {
-    if (!currentEvent.active) force.alphaTarget(0.3).restart()
+    if (!d3.event.active) force.alphaTarget(0.3).restart()
     d.fx = d.x
     d.fy = d.y
     console.log('dragStarted')
 }
 function dragging(d) {
-    d.fx = currentEvent.x
-    d.fy = currentEvent.y
+    d.fx = d3.event.x
+    d.fy = d3.event.y
     console.log('dragging')
 }
 function dragEnded(d) {
-    if (!currentEvent.active) force.alphaTarget(0.5)//0
+    if (!d3.event.active) force.alphaTarget(0.5)//0
     d.fx = null
     d.fy = null
     console.log('dragEnded')
@@ -107,14 +114,15 @@ const updateGraph = (selection) => {
     var zoom = d3.zoom()
         .scaleExtent([0.6,2])
         .on('zoom', function(d) {
-            console.log("zoom",currentEvent.transform.k,14/(currentEvent.transform ?currentEvent.transform.k : 1));
-            selection.select('g').attr("transform", currentEvent.transform);
-            selection.selectAll('text').style('font-size',14/(currentEvent.transform ?currentEvent.transform.k : 1));
+            console.log("zoom",d3.event.transform.k,14/(d3.event.transform ?d3.event.transform.k : 1));
+            selection.select('g').attr("transform", d3.event.transform);
+            selection.selectAll('text').style('font-size',14/(d3.event.transform ?d3.event.transform.k : 1));
             // selection.selectAll('.node').attr("fontSize",14/(d3.event.transform ? d3.event.transform : 1));
           });
     selection.select('.graphContainer')
     .call(zoom);
 };
+
 
 function CheckDirectNodes(index,BFSinput) {
     var ans=[]
@@ -144,18 +152,31 @@ class Graph extends Component {
         this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
         var force = d3.forceSimulation(this.props.data.concept_relationship.nodes);
 
-    
+        firebase.database().ref("/change").on("value", snapshot => {
+            let studentlist = [];
+            snapshot.forEach(snap => {
+                // snap.val() is the dictionary with all your keys/values from the 'students-list' path
+                var data = snap.val();
+                console.log("snap.val=",snap.val());
+                //var data = data.replace("<p>","").replace("</p>","");
+                studentlist.push(data);
+                console.log(data);
+            });
+            this.setState({ studentslist: studentlist });
+        });
+
+        
         force.on('tick', () => {
             force
-            .force("charge", d3.forceManyBody().strength(-700))
+            .force("charge", d3.forceManyBody().strength(-50))
             .force("link", d3.forceLink(this.props.data.concept_relationship.links).distance(function(d) {return (1/((d.similarity+0.5))*200);}).strength(0.1))
             .force("center", d3.forceCenter().x(this.props.width*0.6 / 2).y(this.props.height / 2))
             // .force("collide", d3.forceCollide([5]).iterations([5]))
-
             // const node = d3.selectAll('g').call(drag);
             this.d3Graph.call(updateGraph)
         });
     }
+    
     SetHighlightNodes(index){
         var ans = CheckDirectNodes(index,this.props.data.BFSinput[index]);
         // console.log("hhh",this.props.data.highlight_nodes[index]);
@@ -167,38 +188,33 @@ class Graph extends Component {
             }
         );
     }
-    
+    readFirebase()
+    {
+        var db = firebase.database();
+        db.ref("/save").on("value",function (snapshot){
+                
+                var studentlist = [];
+                var data_db= snapshot.val().contents.replace("<p>","").replace("</p>","");
+                studentlist.push(data_db);
+                
+            });
+        this.setState(
+            {
+                studentslist:studentlist
+            }
+        );
+        console.log("reading db complete ...")
+            
+    }
     
     
     render() {
-        
-        
+
         var nodes = this.props.data.concept_relationship.nodes.map( (node) => {
-        
-
-            
-            //this.readFirebase();
-
-
-            //console.log(node.name);
-            //console.log("--------");
-            
-            
-            
-            var data_db = this.state.studentslist[0];
-            //console.log(this.state.studentslist);
-
-            //Assuming reading firebase work
-            //var data_db = "Bitcoin a new wave which is a decentralized digital currency, without a central bank or single administrator, a breakout,that can be sent from user to user on the peer-to-peer bitcoin network without the need for intermediaries. Transactions are verified by network nodes through cryptography and recorded in a public distributed ledger called a blockchain. The cryptocurrency was invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto. The currency began use in 2009 when its implementation was released as open-source software.";
-            
-            // if-else statement on whether token is matched with the left conceptmap
             try{
-                //var text_seg = cldrSegmentation.wordSplit(data_db);
-                if(data_db.includes(node.name))
+                /*if(data_db.includes(node.name))
                 {
-                    
                     return (
-               
                         <Node
                             data={node}
                             name={node.name}
@@ -219,15 +235,11 @@ class Graph extends Component {
                             BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
                             SetHightlightWord={this.state.SetHightlightWord}
                         />
-                        
                         );
-                        
-                
-    
                 }
-                else
+                else*/ if(( this.props.src =="ApprovPanel" ) && (node.group==2) )
                 {
-                    
+                    console.log("group==1!")
                     return (
                
                         <Node
@@ -249,10 +261,34 @@ class Graph extends Component {
                             HighlightNodeText={this.props.HighlightConceptIndex}
                             BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
                             SetHightlightWord={this.state.SetHightlightWord}
+                            updated={true}
                         />
                         
                         );
     
+                }else{
+                    return(
+                    <Node
+                        data={node}
+                        name={node.name}
+                        key={"node"+node.index}
+                        // enterNode = {enterNode}
+                        updateNode = {updateNode}
+                        // OpenDrawer = {(text) =>this.props.OpenDrawer(text)}
+                        SetHighlightNodes = {this.SetHighlightNodes}
+                        HighlightNodes = {this.state.HighlightNodes}
+                        
+                        DirectNodes = {this.state.DirectNodes}
+                        HoverConceptIndex = {this.props.HoverConceptIndex}
+                        SetHoverConceptIndex={this.props.SetHoverConceptIndex}
+                        ClearHoverConcept = {this.props.ClearHoverConcept}
+                        Path_ConceptIndex={this.props.Path_ConceptIndex} 
+                        SetPath_ConceptIndex={this.props.SetPath_ConceptIndex}
+                        ConceptRange={this.props.ConceptRange}
+                        HighlightNodeText={this.props.HighlightConceptIndex}
+                        BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
+                        SetHightlightWord={this.props.SetHightlightWord}
+                    />)
                 }
             }
             catch (err){
@@ -282,7 +318,8 @@ class Graph extends Component {
                     />
                     
                     );
-            }
+                }
+               
       
             
             });
@@ -321,7 +358,8 @@ class Graph extends Component {
         //         null
         //     );
         // });
-        
+        console.log("nodes = ", nodes);
+        console.log("links = ", links);
         return (
             <div width={this.props.width} height={this.props.height} style={styles.root} >
                 <div style={styles.Div}>

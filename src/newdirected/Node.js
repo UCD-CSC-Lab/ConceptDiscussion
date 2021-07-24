@@ -29,7 +29,13 @@ const styles = {
     }
 };
 
-
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        databaseURL: "https://test-7916a-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    });
+} else {
+    firebase.app(); // if already initialized, use that one
+}
 
 
 //   var ScaleDotSize = d3.scaleLinear()
@@ -67,7 +73,6 @@ class Node extends Component {
         this.NodeRadius = this.NodeRadius.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
         //this.handleHighlight = this.handleHighlight.bind(this);
-        //console.log(this.props.data.name);
     }
 
     componentDidMount() {
@@ -75,6 +80,20 @@ class Node extends Component {
             .datum(this.props.data)
         // .call(this.props.enterNode)
         // console.log("node this",ReactDOM.findDOMNode(this),this.props.data);
+
+        firebase.database().ref("/change").on("value", snapshot => {
+            let studentlist = [];
+            snapshot.forEach(snap => {
+                // snap.val() is the dictionary with all your keys/values from the 'students-list' path
+                var data = snap.val();
+                //console.log("snap = ", snap);
+                var data = data.replace("<p>", "").replace("</p>", "");
+                studentlist.push(data);
+                //console.log(data);
+            });
+            this.setState({ studentslist: studentlist });
+        });
+
     }
 
     // let the node can be moved!!!
@@ -203,6 +222,9 @@ class Node extends Component {
             var NodeColor = "#AFC700";
             console.log("fixing line ...");
         }
+        if (this.props.updated == true) {
+            var NodeColor = "#FF0000";
+        }
 
 
         return (
@@ -211,11 +233,8 @@ class Node extends Component {
                 <circle ref="dragMe"
                     onClick={this.handleClick.bind(this)}
                     onMouseOver={this.handleHover.bind(this)}
-
                     // 應該要綁定一個事件是當用戶觸發某個狀態 會從新繪圖 e.g. mouse over
                     //onMouseOver={this.handleHighlight.bind(this)} 
-
-
                     onMouseOut={this.handleMouseOut}
                     r={this.NodeRadius(this.props.data.count, this.props.ConceptRange)}
                     // r = {ScaleDotSize(this.props.data.count)}

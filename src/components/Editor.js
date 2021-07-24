@@ -6,8 +6,29 @@ import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import plugins from 'suneditor/src/plugins'
 import { axisLeft } from 'd3-axis';
 import SUNEDITOR from 'suneditor';
+//Start Connect to database----------
+if (!firebase.apps.length) {
+  firebase.initializeApp({
+    databaseURL: "https://test-7916a-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  })
+  }else {
+  firebase.app(); // if already initialized, use that one
+  }
 
+const mydatabase = firebase.database();
 
+var options = {
+  buttonList: [
+      ['undo', 'redo'],
+      ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+      ['removeFormat'],
+      ['outdent', 'indent'],
+      ['fullScreen', 'showBlocks', 'codeView'],
+      ['preview', 'print'],
+      ['image', 'video']
+  ],
+  width: '100%'
+}
 
 // ex) A command plugin to add "text node" to selection
 var plugin_command = {
@@ -133,20 +154,31 @@ class Editor extends Component {
         }
       }      
   }
-  save(contents, isChange){
+  save(){
     //console.log("SetMapConsult(add)");
-    this.props.SetMapConsult("ask");
-    mydatabase.ref('/save/').set(this.ref.current.core.getContents());
-    
+    var tmp = this;
+    fetch('http://localhost:8001/GetJson/')     //跟後端連結去getJson
+    .then(function (res) {
+        //console.log(res.json());
+        return res.json();
+    }).then(function(myJson) {
+        tmp.props.SetNewJson(myJson);
+        return myJson;
+    });
+    //console.log(this.props);
+    //this.props.SetMapConsult("add");
+    //mydatabase.ref('/save').set({contents});
   }
 
     render() {
       return (
+        <div>
+          {this.state.content }
         <SunEditor 
                         SetMapConsult = {this.props.SetMapConsult}
                         setOptions = {{
                           width:(window.innerWidth-(window.innerWidth-50)/2)-600,
-                          height:(window.innerHeight-100),
+                          height:window.innerHeight-100,
                           plugins: [plugin_command],
                           buttonList:[
                             ['undo', 'redo'],
@@ -157,13 +189,16 @@ class Editor extends Component {
                             ['customCommand'],
                             ['-right', ':i-More Misc-default.more_vertical', 'fullScreen', 'showBlocks', 'codeView', 'preview', 'print'],
                           ],
-                          callBackSave : (contents, isChange) => this.save()
+                          callBackSave : this.save
                     }}
                     onChange = {this.handleChange}
                     getSunEditorInstance={this.getSunEditorInstance}
                     onFocus = {this.onFocus}
                     onBlur = {this.onBlur}
+                    setContents = {"hot end 3d print stl file"}
+                    SetMapConsult={this.props.SetMapConsult}
                      />
+    </div>
       );
     }
   }

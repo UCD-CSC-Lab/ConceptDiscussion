@@ -1,11 +1,11 @@
-import React , { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Dialog from '@material-ui/core/Dialog';
 import Drawer from '@material-ui/core/Drawer';
 import HighlightModeSelector from './HighlightModeSelector';
 import Video_info from './newdirected/Video_info';
-import jsondata from './graphFile.json';
+// import jsondata from './graphFile.json';
 import BarField from './components/BarField';
 import SearchField from './components/SearchField';
 import LearningMapFrame from './components/LearningMapFrame';
@@ -13,12 +13,34 @@ import CreatingField from './components/CreatingField';
 import MenuDrawer from './components/MenuDrawer';
 import { EditorState } from 'draft-js';
 import Editor from './components/Editor'
-import { HashRouter } from "react-router-dom";
-//import 'react-draft-wysiwyg.css';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 
 
 
+function storedata() {
+  var firebaseConfig = {
+    apiKey: "AIzaSyD5ro8Oj_EHuFweJR3bywJCO49egETQp7g",
+    authDomain: "test-7916a.firebaseapp.com",
+    databaseURL: "https://test-7916a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "test-7916a",
+    storageBucket: "test-7916a.appspot.com",
+    messagingSenderId: "931195594829",
+    appId: "1:931195594829:web:65c637f9dc54e245d4d404",
+    measurementId: "G-T5RH81V2MG"
+    };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+  var db = firebase.firestore();
+  db.collection("movies").doc("Harry Potter").set(
+    {
+      name:"Harry",
+      date:"2010",
+    }
+  )
+  console.log("hit!!")
+}
 
 /*** * 獲取當前瀏覽器類型 */ 
 function myBrowser() { 
@@ -54,9 +76,7 @@ function beforunload(event) { event = event ? event : (window.event ? window.eve
 
 
 class App extends React.Component {
-  
   constructor(props) {
-    console.log("index .js is been read !!!");
     super(props);
     this.state = {
       MenuOpened : false,
@@ -65,8 +85,7 @@ class App extends React.Component {
       Progress:1,
       SearchHistory:null,
       VisJson:null,
-      SearchKeyword:null,
-      NewJson:null,
+      SearchKeyword:null
   };
     this.SetProgress = this.SetProgress.bind(this);
     this.SetMenuOpen = this.SetMenuOpen.bind(this);
@@ -75,36 +94,29 @@ class App extends React.Component {
     this.SetSearchKeyword = this.SetSearchKeyword.bind(this);
     this.OpenDrawer = this.OpenDrawer.bind(this);
     this.CloseDrawer = this.CloseDrawer.bind(this);
-    this.SetVisJson = this.CloseDrawer.bind(this);
+    this.SetVisJson = this.SetVisJson.bind(this);
     this.SetNewJson = this.SetNewJson.bind(this);
   }
   SetVisJson(json){
     this.setState({VisJson : json});
   }
   SetNewJson(json){
+    console.log("NewJson setted from ", this.state.NewJson, " to ", json);
     this.setState({NewJson : json});
   }
 
+
   SetProgress(progress,json){
-    console.log("this.state.NewJson == ", this.state.NewJson);
-    console.log("this.state.VisJson == ", this.state.VisJson);
-    console.log("json == ", json);
     // console.log("p,k",progress,json);
     if(json==undefined){
       this.setState({Progress:progress});
-      console.log(" json == undefined!!");
     }
     else{
-      console.log("enter else!!")
-      this.setState(
-        {
-          Progress: progress,
-          VisJson : json,
-        }
-      );
-      this.setState({NewJson:json});
-    console.log("this.state.NewJson == ", this.state.NewJson);
-    console.log("this.state.VisJson == ", this.state.VisJson);
+      this.setState({
+        Progress: progress,
+        VisJson : json,
+        NewJson : json
+      });
     }
   }
   SetMenuOpen(){
@@ -140,8 +152,12 @@ class App extends React.Component {
 
   render() {
     window.onbeforeunload = function(event) { 
-      return beforunload(event);
+      return beforunload(event); 
       }; 
+      
+
+  
+  
     if(this.state.Progress==1){
       return (       
         <div>
@@ -152,6 +168,7 @@ class App extends React.Component {
                 SetSearchHistory={this.SetSearchHistory}
                 />
               <MenuDrawer  
+                SetNewJson = {this.SetNewJson}
                 open = {this.state.MenuOpened} 
                 SetProgress = {this.SetProgress}  
                 SearchHistory={this.state.SearchHistory} 
@@ -164,8 +181,7 @@ class App extends React.Component {
       
       );
     }else if(this.state.Progress==2){
-      return ( 
-            
+      return (       
         <div>
           <MuiThemeProvider>
           <BarField 
@@ -199,7 +215,7 @@ class App extends React.Component {
           >
           <Video_info vid = {this.state.selectedVid} videos_info = {this.state.VisJson.videos_info} CloseDrawer={this.CloseDrawer} />
           </Dialog>
-          </MuiThemeProvider>
+          </MuiThemeProvider> 
         </div>
       );
     }
@@ -207,9 +223,6 @@ class App extends React.Component {
 }
 
 
-ReactDOM.render(
-  <HashRouter basename={process.env.PUBLIC_URL}>
-        <App />
-  </HashRouter>,
-  document.getElementById('root')
-);
+    
+
+ReactDOM.render(<App />, document.getElementById('root'));
