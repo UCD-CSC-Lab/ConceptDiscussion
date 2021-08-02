@@ -3,14 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Learning Map</title>
-	<script>
-		// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
-		if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;
-	</script>
-
 	<!-- <link rel="icon" type="image/png" href="molecule.png" /> -->
 	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<!-- The core Firebase JS SDK is always required and must be listed first -->
 	<!-- The core Firebase JS SDK is always required and must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>	
 	<!-- Add SDKs for Firebase products that you want to use
@@ -19,6 +13,9 @@
 	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Hahmlet&display=swap" rel="stylesheet">
 	<script language="javascript">
 				
 		function storedata() {
@@ -31,14 +28,14 @@
 			}
 			const mydatabase = firebase.database();
 			mydatabase.ref('/').set({a:123});
-			console.log("firebase hit")	
+			console.log("hit!")	
 		}
 	</script>
 </head>
 <body>
 	
 	<!--要插入內容的DOM-->
-	<div id="root"></div>
+	<div id="app"></div>
 	
 	<!--react-->
 	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>

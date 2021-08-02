@@ -154,10 +154,13 @@ class Editor extends Component {
         }
       }      
   }
+  componentDidMount(){
+    console.log(this.ref);
+  }
   save(){
     //console.log("SetMapConsult(add)");
     var tmp = this;
-    fetch('https://appbackend-hci.herokuapp.com/GetJson/')     //跟後端連結去getJson
+    fetch('http://localhost:8001/GetJson/')     //跟後端連結去getJson
     .then(function (res) {
         //console.log(res.json());
         return res.json();
@@ -173,11 +176,10 @@ class Editor extends Component {
     render() {
       return (
         <div>
-          {this.state.content }
         <SunEditor 
                         SetMapConsult = {this.props.SetMapConsult}
                         setOptions = {{
-                          width:(window.innerWidth-(window.innerWidth-50)/2)-600,
+                          width:(window.innerWidth/3),
                           height:window.innerHeight-100,
                           plugins: [plugin_command],
                           buttonList:[
@@ -195,7 +197,6 @@ class Editor extends Component {
                     getSunEditorInstance={this.getSunEditorInstance}
                     onFocus = {this.onFocus}
                     onBlur = {this.onBlur}
-                    setContents = {"hot end 3d print stl file"}
                     SetMapConsult={this.props.SetMapConsult}
                      />
     </div>
