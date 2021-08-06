@@ -6,9 +6,6 @@ class Cards extends Component {
         super(props);
         this.state={
             cards: [
-                {id:1, content:"hi"},
-                {id:2, content:"how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?how r u?"},
-                {id:3, content:"I'm fine tku and u?"},
             ]
         };
         this.handleDelete=this.handleDelete.bind(this);
@@ -46,6 +43,7 @@ class Cards extends Component {
             <div>
                 {this.state.cards.map(card =>
                     (<Card content={card.content}
+                            key={card.id}
                             id = {card.id}
                             onDelete={this.handleDelete}
                             onEdit={this.handleEdit} 
