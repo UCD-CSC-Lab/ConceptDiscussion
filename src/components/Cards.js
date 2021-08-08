@@ -36,7 +36,7 @@ class Cards extends Component {
             this.props.SetNewJson(myJson);
             return myJson;
         });
-        console.log("Handle saving is completed ...")
+        console.log("Handle saving is completed ...");
             
     }
     componentDidUpdate(prevProps,prevState) {
