@@ -168,7 +168,7 @@ class LearningMapFrame extends Component {
     SetMapConsult(method){
         if (method == "add"){
             /*     正式的讓後端去取db資料，算出新的Json檔
-            fetch('http://localhost:8001/MapPreview/<Keyword>')     //跟後端連結去getJson
+            fetch('https://appbackend-hci.herokuapp.com/MapPreview/<Keyword>')     //跟後端連結去getJson
             .then(function (res) {
             //    console.log(res.json());
                 return res.json();

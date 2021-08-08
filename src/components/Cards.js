@@ -28,6 +28,15 @@ class Cards extends Component {
     }
     handleSave(cardId){
         console.log("handleSave", cardId);
+        fetch('https://appbackend-hci.herokuapp.com/MapPreview/COVID19_Isnotgood')     //跟後端連結去getJson
+        .then(function (res) {
+        //    console.log(res.json());
+            return res.json();
+        }).then(function(myJson) {
+            this.props.SetNewJson(myJson);
+            return myJson;
+        });
+            
     }
     componentDidUpdate(prevProps,prevState) {
         // 常見用法（別忘了比較 prop）：
