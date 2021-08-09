@@ -10,7 +10,8 @@ class Cards extends Component {
         };
         this.handleDelete=this.handleDelete.bind(this);
         this.handleEdit=this.handleEdit.bind(this);      
-        this.addCard=this.addCard.bind(this);      
+        this.addCard=this.addCard.bind(this);  
+        this.handleSave=this.handleSave.bind(this);      
     }
     addCard(content){
         let cards = this.state.cards;
@@ -29,12 +30,12 @@ class Cards extends Component {
     handleSave(cardId){
         // Extracting card's content is still under development
         console.log("handleSave", cardId);
-        var tmp = this;
+        console.log(this.props.content)
         fetch('https://appbackend-hci.herokuapp.com/MapUpdate/COVID19_Isnotgood')     //跟後端連結去getJson
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
-            tmp.props.SetNewJson(myJson);
+            this.props.SetNewJson(myJson);
             return myJson;
         });
         console.log("Handle saving is completed ...");
