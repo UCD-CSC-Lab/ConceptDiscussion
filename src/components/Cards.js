@@ -27,10 +27,11 @@ class Cards extends Component {
         console.log("handleEdit",cardId);
     }
     handleSave(cardId){
+        // Extracting card's content is still under development
         console.log("handleSave", cardId);
+        console.log(this.props.content);
         fetch('https://appbackend-hci.herokuapp.com/MapUpdate/COVID19_Isnotgood')     //跟後端連結去getJson
         .then(function (res) {
-        //    console.log(res.json());
             return res.json();
         }).then(function(myJson) {
             this.props.SetNewJson(myJson);
