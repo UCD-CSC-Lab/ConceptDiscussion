@@ -31,7 +31,7 @@ class Cards extends Component {
         // Extracting card's content is still under development
         console.log("handleSave", cardId);
         //var backend_api = "https://appbackend-hci.herokuapp.com/MapUpdate/";
-        console.log(this.state);
+        console.log(this.state.cards);
         fetch("https://appbackend-hci.herokuapp.com/MapUpdate/COVID19_It is evitably disaster for human to suffer disease like that")     //跟後端連結去getJson
         .then(function (res) {
             return res.json();
