@@ -29,7 +29,6 @@ class Cards extends Component {
     handleSave(cardId){
         // Extracting card's content is still under development
         console.log("handleSave", cardId);
-        console.log(this.props.content);
         fetch('https://appbackend-hci.herokuapp.com/MapUpdate/COVID19_Isnotgood')     //跟後端連結去getJson
         .then(function (res) {
             return res.json();
