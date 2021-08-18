@@ -97,7 +97,7 @@ class MapApprovPanel extends Component {
         */
     }
     ApproveClicked(){
-        fetch('https://appbackend-hci.herokuapp.com/Update/<Keyword>')     //跟後端連結去getJson
+        fetch('https://conceptmap-backend.herokuapp.com/Update/<Keyword>')     //跟後端連結去getJson
             .then(function (res) {
             //    console.log(res.json());
                 return res.json();

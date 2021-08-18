@@ -74,7 +74,7 @@ class SearchField extends Component {
     componentWillMount(){
         // console.log("SearcgFieldMount");
         var tmp = this;
-        fetch('https://appbackend-hci.herokuapp.com/SearchHistory/')
+        fetch('https://conceptmap-backend.herokuapp.com/SearchHistory/')
         .then(function (res) {
         //    console.log(res.json());
             return res.json();
@@ -95,7 +95,7 @@ class SearchField extends Component {
             console.log("here!!!!XXXXbitcoin")
             var tmp = this;
             var index = 0;
-            fetch('https://appbackend-hci.herokuapp.com/GetJson_bitcoin/'+index)
+            fetch('https://conceptmap-backend.herokuapp.com/GetJson_bitcoin/'+index)
             .then(function (res) {
                 return res.json();
             }).then(function(myJson) {
@@ -105,7 +105,7 @@ class SearchField extends Component {
         }
         else{
             var tmp = this;
-            fetch('https://appbackend-hci.herokuapp.com/GetAnalyzeResult/'+keyword)
+            fetch('https://conceptmap-backend.herokuapp.com/GetAnalyzeResult/'+keyword)
             .then(function (res) {
                 return res.json();
             }).then(function(myJson) {
@@ -137,7 +137,7 @@ class SearchField extends Component {
     }
     TagClick(keyword){
         var tmp = this;
-        fetch('https://appbackend-hci.herokuapp.com/GetAnalyzeResult/'+keyword)
+        fetch('https://conceptmap-backend.herokuapp.com/GetAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -149,7 +149,7 @@ class SearchField extends Component {
     TagDelete(keyword){
         // console.log("tag delete",this);
         var tmp = this;
-        fetch('https://appbackend-hci.herokuapp.com/DeleteAnalyzeResult/'+keyword)
+        fetch('https://conceptmap-backend.herokuapp.com/DeleteAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {

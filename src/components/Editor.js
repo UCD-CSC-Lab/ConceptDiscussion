@@ -162,7 +162,7 @@ class Editor extends Component {
     //console.log(this.ref.current);
     this.props.SetNewCardContent(this.ref.current.getText());
     var tmp = this;
-    fetch('https://appbackend-hci.herokuapp.com/GetJson/')     //跟後端連結去getJson
+    fetch('https://conceptmap-backend.herokuapp.com/GetJson/')     //跟後端連結去getJson
     .then(function (res) {
         //console.log(res.json());
         return res.json();

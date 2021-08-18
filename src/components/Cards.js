@@ -29,14 +29,19 @@ class Cards extends Component {
     }
     handleSave(cardId){
         // Extracting card's content is still under development
-        console.log("handleSave", cardId);
+        //var topic = "";
         //var backend_api = "https://appbackend-hci.herokuapp.com/MapUpdate/";
-        console.log(this.state.cards);
-        fetch("https://appbackend-hci.herokuapp.com/MapUpdate/COVID19_It is evitably disaster for human to suffer disease like that")     //跟後端連結去getJson
+        console.log("handleSave", cardId);
+        var tmp = this;
+        var content = this.state.cards[0].content;
+        var api = "https://conceptmap-backend.herokuapp.com/MapUpdate/";
+        var topic = "NLP_intro-";
+        fetch(api.concat(topic,content))     //跟後端連結去getJson
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
-            this.props.SetNewJson(myJson);
+            tmp.props.SetNewJson(myJson);
+            //tmp.props.SetProgress(3,myJson);
             return myJson;
         });
         console.log("Handle saving is completed ...");

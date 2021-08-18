@@ -168,7 +168,7 @@ class LearningMapFrame extends Component {
     SetMapConsult(method){
         if (method == "add"){
             /*     正式的讓後端去取db資料，算出新的Json檔
-            fetch('https://appbackend-hci.herokuapp.com/MapPreview/<Keyword>')     //跟後端連結去getJson
+            fetch('https://appbackend-hci.herokuapp.comㄤ/MapPreview/<Keyword>')     //跟後端連結去getJson
             .then(function (res) {
             //    console.log(res.json());
                 return res.json();
@@ -239,7 +239,10 @@ class LearningMapFrame extends Component {
                 
                 <div>
                     <div>
-                    <Cards newCardContent = {this.state.newCardContent}/>
+                    <Cards newCardContent = {this.state.newCardContent}
+                            SetNewJson = {this.props.SetNewJson}
+                            SetProgress = {this.props.SetProgress}  
+                    />
                     </div>
                     <div style = {styles.Editor}>
                     <Editor content = {this.state.content}
