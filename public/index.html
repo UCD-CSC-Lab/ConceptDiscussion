@@ -3,8 +3,15 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Learning Map</title>
+	<script>
+		// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
+		if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;
+	</script>
+
 	<!-- <link rel="icon" type="image/png" href="molecule.png" /> -->
 	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<!-- <link rel="icon" type="image/png" href="molecule.png" /> -->
 	<!-- The core Firebase JS SDK is always required and must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>	
 	<!-- Add SDKs for Firebase products that you want to use
@@ -16,36 +23,10 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Hahmlet&display=swap" rel="stylesheet">
-	<script language="javascript">
-				
-		function storedata() {
-			if (!firebase.apps.length) {
-			firebase.initializeApp({
-				databaseURL: "https://test-7916a-default-rtdb.asia-southeast1.firebasedatabase.app/"
-			});
-			}else {
-			firebase.app(); // if already initialized, use that one
-			}
-			const mydatabase = firebase.database();
-			mydatabase.ref('/').set({a:123});
-			console.log("hit!")	
-		}
-	</script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
 </head>
-<body>
-	
+<body>	
 	<!--要插入內容的DOM-->
-	<div id="app"></div>
-	
-	<!--react-->
-	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-	<!--Babel-->
-	<script src="https://unpkg.com/babel-standalone@6.4.4/babel.js"></script>
-
-	<!--若有設定type="text/babel"-->
-	<script src = "index.js" type="text/babel"></script> 
-	
-
+	<div id="root"></div>
 </body>
 </html>

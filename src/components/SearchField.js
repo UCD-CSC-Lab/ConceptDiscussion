@@ -9,6 +9,7 @@ import Search from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
 import AlertDialog from './AlertDialog';
+import UserNameDialog from './UserNameDialog';
 import HomePageImg from './homepage3.png';
 import AutoSuggestions from './AutoSuggestions';
 
@@ -63,6 +64,7 @@ class SearchField extends Component {
             historyWords:[],
             alertOpen:false,
             alertCondition : null,
+            nameDialogOpen:true,
         }
         this.handleClick = this.handleClick.bind(this);
         this.TagClick = this.TagClick.bind(this);
@@ -70,11 +72,12 @@ class SearchField extends Component {
         this.HandleAlertClose = this.HandleAlertClose.bind(this);
         this.Go_CreateNewMap = this.Go_CreateNewMap.bind(this);
         this.Go_CheckExistedMap = this.Go_CheckExistedMap.bind(this);
+        this.HandleNameDialogClose = this.HandleNameDialogClose.bind(this);
     }
     componentWillMount(){
         // console.log("SearcgFieldMount");
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/SearchHistory/')
+        fetch('https://appbackend-hci.herokuapp.com/SearchHistory/')
         .then(function (res) {
         //    console.log(res.json());
             return res.json();
@@ -95,7 +98,7 @@ class SearchField extends Component {
             console.log("here!!!!XXXXbitcoin")
             var tmp = this;
             var index = 0;
-            fetch('https://conceptmap-backend.herokuapp.com/GetJson_bitcoin/'+index)
+            fetch('https://appbackend-hci.herokuapp.com/GetJson_bitcoin/'+index)
             .then(function (res) {
                 return res.json();
             }).then(function(myJson) {
@@ -105,7 +108,7 @@ class SearchField extends Component {
         }
         else{
             var tmp = this;
-            fetch('https://conceptmap-backend.herokuapp.com/GetAnalyzeResult/'+keyword)
+            fetch('https://appbackend-hci.herokuapp.com/GetAnalyzeResult/'+keyword)
             .then(function (res) {
                 return res.json();
             }).then(function(myJson) {
@@ -137,7 +140,7 @@ class SearchField extends Component {
     }
     TagClick(keyword){
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/GetAnalyzeResult/'+keyword)
+        fetch('https://appbackend-hci.herokuapp.com/GetAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -149,7 +152,7 @@ class SearchField extends Component {
     TagDelete(keyword){
         // console.log("tag delete",this);
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/DeleteAnalyzeResult/'+keyword)
+        fetch('https://appbackend-hci.herokuapp.com/DeleteAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -167,6 +170,11 @@ class SearchField extends Component {
     HandleAlertClose(){
         this.setState({
             alertOpen:false,
+        });
+    }
+    HandleNameDialogClose(){
+        this.setState({
+            nameDialogOpen:false,
         });
     }
     render() {
@@ -193,6 +201,12 @@ class SearchField extends Component {
                 Go_CreateNewMap={this.Go_CreateNewMap}
                 Go_CheckExistedMap={this.Go_CheckExistedMap}
             />
+            <UserNameDialog 
+            nameDialogOpen={this.props.userId==null} 
+            HandleNameDialogClose={this.HandleNameDialogClose} 
+            userId = {this.props.userId}
+            SetUserId = {this.props.SetUserId}
+        />
             </div>
         );
         

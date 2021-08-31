@@ -35,7 +35,7 @@ const styles = ({
         // height:800,
         position: 'fixed',
         bottom:10,
-        right:10
+        right:20
       },
     LeftField: {
         // display:'flex',
@@ -64,7 +64,11 @@ class LearningMapFrame extends Component {
             ],
             newCardContent:false,
             MapConsult: false,
+            cardEditing:false,
+            editingCardId:"",
+            editorContent:""
             };
+        this.SetEditorContent = this.SetEditorContent.bind(this);
         this.SetHoverConceptIndex = this.SetHoverConceptIndex.bind(this);
         this.SetMapConsult = this.SetMapConsult.bind(this);
         this.SetNewCardContent = this.SetNewCardContent.bind(this);
@@ -75,6 +79,14 @@ class LearningMapFrame extends Component {
         this.ClearHoverConcept = this.ClearHoverConcept.bind(this);
         // Adding words hightlighting functions by YHT
         this.SetHightlightWord = this.SetHightlightWord.bind(this);
+        this.SetCardEdit = this.SetCardEdit.bind(this);
+    }
+    SetEditorContent(content){
+        this.setState({editorContent:content});
+    }
+    SetCardEdit(bool, cardId){
+        this.setState({cardEditing:bool,
+                        editingCardId:cardId});
     }
     componentWillMount() {
         console.log("[graph]", ",", this.props.data.search_info.key);
@@ -106,9 +118,8 @@ class LearningMapFrame extends Component {
         this.setState({
             content: word
         });
-        console.log("call set hightlight");
-        console.log("this.state.content=", this.state.content);
-        console.log("this.state.HLW=", this.state.HightlightWord);
+        
+        this.props.SetHoverConceptIndexAtIndex(i);    
         //console.log(word);
         //this.forceUpdate();
     }
@@ -168,7 +179,7 @@ class LearningMapFrame extends Component {
     SetMapConsult(method){
         if (method == "add"){
             /*     正式的讓後端去取db資料，算出新的Json檔
-            fetch('https://appbackend-hci.herokuapp.comㄤ/MapPreview/<Keyword>')     //跟後端連結去getJson
+            fetch('http://localhost:8001/MapPreview/<Keyword>')     //跟後端連結去getJson
             .then(function (res) {
             //    console.log(res.json());
                 return res.json();
@@ -221,11 +232,11 @@ class LearningMapFrame extends Component {
                     />
                     {/* <WordCloud videos_info={this.props.data.videos_info} HoverVideoIndex={this.state.HoverVideoIndex}/> */}
                     <Graph data={this.props.data}
-                        HoverConceptIndex={this.state.HoverConceptIndex}
+                        HoverConceptIndex={this.props.HoverConceptIndexAtIndex}
                         SetHoverConceptIndex={this.SetHoverConceptIndex}
                         ClearHoverConcept = {this.ClearHoverConcept} 
                         OpenDrawer={(text) => props.OpenDrawer(text)}
-                        width={window.innerWidth - 50} height={window.innerHeight - 100}
+                        width={window.innerWidth/2 - 50} height={window.innerHeight - 100}
                         SentRange={SentRange}
                         ConceptRange={ConceptRange}
                         SetHoverVideoIndex={this.SetHoverVideoIndex}
@@ -234,21 +245,35 @@ class LearningMapFrame extends Component {
                         SetPath_ConceptIndex={this.SetPath_ConceptIndex}
                         BigCircleIndex={this.state.BigCircleIndex}
                         SetHightlightWord={this.SetHightlightWord}
+                        HoverConceptIndexAtIndex = {this.props.HoverConceptIndexAtIndex}
+                        HighlightNodesAtIndex = {this.props.HighlightNodesAtIndex}
+                        DirectNodesAtIndex = {this.props.DirectNodesAtIndex}
+                        SetDirectNodesAtIndex = {this.props.SetDirectNodesAtIndex}
+                        SetHighlightNodesAtIndex = {this.props.SetHighlightNodesAtIndex}
                     />
                 </div>
                 
                 <div>
                     <div>
-                    <Cards newCardContent = {this.state.newCardContent}
-                            SetNewJson = {this.props.SetNewJson}
-                            SetProgress = {this.props.SetProgress}  
-                    />
+                    <Cards 
+                            SetEditorContent = {this.SetEditorContent}
+                            newCardContent = {this.state.newCardContent}
+                            searchInfo = {this.props.data.search_info.key}
+                            SetCardEdit = {this.SetCardEdit}
+                            editingCardId = {this.state.editingCardId}
+                            cardEditing = {this.state.cardEditing}/>
                     </div>
                     <div style = {styles.Editor}>
                     <Editor content = {this.state.content}
+                            userId={this.props.userId}
                             SetMapConsult = {this.SetMapConsult}
                             SetNewJson = {this.props.SetNewJson}
+                            searchInfo = {this.props.data.search_info.key}
                             SetNewCardContent = {this.SetNewCardContent}
+                            SetCardEdit = {this.SetCardEdit}
+                            cardEditing = {this.state.cardEditing}
+                            editingCardId = {this.state.editingCardId}
+                            editorContent={this.state.editorContent}
                     />
                     {/*<button onClick={()=>this.SetMapConsult("add")}
                             className="btn btn-primary btn-lg m-5">Show New Map</button>*/}
@@ -266,8 +291,9 @@ class LearningMapFrame extends Component {
                     HighlightConceptTextIndex={HighlightConceptTextIndex}
                     BigCircleIndex={this.state.BigCircleIndex}
                     SetBigCircleIndex={this.SetBigCircleIndex}
-                    
+                    SetProgress = {this.props.SetProgress} 
                     SetNewCardContent = {this.SetNewCardContent}
+                    SetVideoId = {this.props.SetVideoId} 
                 />
                 <MapApprovPanel 
                     data={this.props.data}
