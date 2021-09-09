@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 /* editor component */
 import SunEditor,{buttonList} from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
-import plugins from 'suneditor/src/plugins'
+import plugins, { template } from 'suneditor/src/plugins'
 import { axisLeft } from 'd3-axis';
 import SUNEDITOR from 'suneditor';
 //Start Connect to database----------
@@ -190,14 +190,16 @@ class Editor extends Component {
       
       var sendBackEnd='https://conceptmap-backend.herokuapp.com/SaveEditor/';
       sendBackEnd = sendBackEnd+concept+"&"+userId+"&"+content;
-      fetch(sendBackEnd);     //跟後端連結去getJson
-      /*.then(function (res) {
+      fetch(sendBackEnd)     //跟後端連結去getJson
+      .then(function (res) {
           console.log(res);
-          //return res.json();
+          return res.json();
       }).then(function(myJson) {
           tmp.props.SetNewJson(myJson);
+          
+        tmp.props.SetVisJson(myJson);
           return myJson;
-      });*/
+      });
       //console.log(this.props);
       //this.props.SetMapConsult("add");
       //mydatabase.ref('/save').set({contents});
@@ -207,7 +209,15 @@ class Editor extends Component {
       var sendBackEnd='https://conceptmap-backend.herokuapp.com/SaveCard/';
       sendBackEnd = sendBackEnd+concept+"&"+cardId+"&"+userId+"&"+content;
       console.log("sendBackEnd = ", sendBackEnd);
-      fetch(sendBackEnd);     //跟後端連結去getJson
+      fetch(sendBackEnd)
+      .then(function (res) {
+        console.log(res);
+        return res.json();
+    }).then(function(myJson) {
+        tmp.props.SetNewJson(myJson);
+        tmp.props.SetVisJson(myJson);
+        return myJson;
+    });     //跟後端連結去getJson
       this.props.SetCardEdit(false,"");
     }
     

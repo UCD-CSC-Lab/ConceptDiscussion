@@ -53,6 +53,7 @@ class BarField extends Component {
     MenuOnClick(){
         // console.log("menu click");
         var tmp = this;
+        
         fetch('https://conceptmap-backend.herokuapp.com/SearchHistory/')
         .then(function (res) {
         //    console.log(res.json());

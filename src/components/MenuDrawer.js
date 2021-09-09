@@ -53,7 +53,7 @@ class MenuDrawer extends Component {
 
     TagClick(keyword){
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/GetAnalyzeResult/'+keyword)
+        fetch('https://appbackend-hci.herokuapp.com/GetAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -65,7 +65,7 @@ class MenuDrawer extends Component {
     }
     ButtonClick(index){
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/GetJson_bitcoin/'+index)
+        fetch('https://appbackend-hci.herokuapp.com/GetJson_bitcoin/'+index)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -79,7 +79,7 @@ class MenuDrawer extends Component {
     TagDelete(keyword){
         // console.log("tag delete",this);
         var tmp = this;
-        fetch('https://conceptmap-backend.herokuapp.com/DeleteAnalyzeResult/'+keyword)
+        fetch('https://appbackend-hci.herokuapp.com/DeleteAnalyzeResult/'+keyword)
         .then(function (res) {
             return res.json();
         }).then(function(myJson) {
@@ -151,6 +151,14 @@ class MenuDrawer extends Component {
                     label={"NLP_Demo"} 
                     style={styles.chip2}  
                     onClick={this.ButtonClick.bind(this,3)} 
+                    clickable="true" 
+                    // onDelete={this.TagDelete.bind(this,word)}
+                />
+                <Chip
+                    key = {"sorting_data_structure"} 
+                    label={"sorting_data_structure"} 
+                    style={styles.chip2}  
+                    onClick={this.ButtonClick.bind(this,4)} 
                     clickable="true" 
                     // onDelete={this.TagDelete.bind(this,word)}
                 />
