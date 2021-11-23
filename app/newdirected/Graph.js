@@ -106,6 +106,7 @@ const updateLink = (selection) => {
 };
 const updateGraph = (selection) => {
     //if(hovering==true){
+    
     selection.selectAll('.node')
         .call(updateNode);
         // .call(drag);
@@ -146,6 +147,7 @@ class Graph extends Component {
             // PopoverIndexes:[],
             studentslist : [],
             hovering:false,
+            //HighlightRelatedNodes: this.props.HighlightRelatedNodes
         };
         this.SetNodeHovering = this.SetNodeHovering.bind(this);
         this.SetHighlightNodes = this.SetHighlightNodes.bind(this);
@@ -156,21 +158,22 @@ class Graph extends Component {
         hovering=bool;
     }
     componentDidMount() {
+        
         this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
         var force = d3.forceSimulation(this.props.data.concept_relationship.nodes);
 
-        firebase.database().ref("/change").on("value", snapshot => {
-            let studentlist = [];
-            snapshot.forEach(snap => {
-                // snap.val() is the dictionary with all your keys/values from the 'students-list' path
-                var data = snap.val();
-                console.log("snap.val=",snap.val());
-                //var data = data.replace("<p>","").replace("</p>","");
-                studentlist.push(data);
-                console.log(data);
-            });
-            this.setState({ studentslist: studentlist });
-        });
+        // firebase.database().ref("/change").on("value", snapshot => {
+        //     let studentlist = [];
+        //     snapshot.forEach(snap => {
+        //         // snap.val() is the dictionary with all your keys/values from the 'students-list' path
+        //         var data = snap.val();
+        //         console.log("snap.val=",snap.val());
+        //         //var data = data.replace("<p>","").replace("</p>","");
+        //         studentlist.push(data);
+        //         console.log(data);
+        //     });
+        //     this.setState({ studentslist: studentlist });
+        // });
 
         
         force.on('tick', () => {
@@ -182,14 +185,48 @@ class Graph extends Component {
             // const node = d3.selectAll('g').call(drag);
             this.d3Graph.call(updateGraph)
         });
+
     }
-    componentDidUpdate(prevProps,prevState) {
-        // 常見用法（別忘了比較 prop）：
-        if (this.props.data !== prevProps.data) {
-            console.log("data update!!");
-            this.forceUpdate();
-        };
-      }
+    // componentDidUpdate(prevProps,prevState) {
+    //      // 常見用法（別忘了比較 prop）：
+    //      if (this.props.data !== prevProps.data) {
+    //          console.log("data update!!");
+
+    //          var d3graph_g = d3.select('graph').selectAll('*');
+    //          d3graph_g.exit().remove();
+
+
+            
+
+    // //         //this.forceUpdate();
+    //          this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
+    //          var force = d3.forceSimulation(this.props.data.concept_relationship.nodes);
+
+    // //     // firebase.database().ref("/change").on("value", snapshot => {
+    // //     //     let studentlist = [];
+    // //     //     snapshot.forEach(snap => {
+    // //     //         // snap.val() is the dictionary with all your keys/values from the 'students-list' path
+    // //     //         var data = snap.val();
+    // //     //         console.log("snap.val=",snap.val());
+    // //     //         //var data = data.replace("<p>","").replace("</p>","");
+    // //     //         studentlist.push(data);
+    // //     //         console.log(data);
+    // //     //     });
+    // //     //     this.setState({ studentslist: studentlist });
+    // //     // });
+
+        
+    //         force.on('tick', () => {
+    //             force
+    //             .force("charge", d3.forceManyBody().strength(-20))
+    //             .force("link", d3.forceLink(this.props.data.concept_relationship.links).distance(function(d) {return (1/((d.similarity+0.5))*200);}).strength(0.1))
+    //             .force("center", d3.forceCenter().x(this.props.width*0.6 / 2).y(this.props.height / 2))
+    //             // .force("collide", d3.forceCollide([5]).iterations([5]))
+    //             // const node = d3.selectAll('g').call(drag);
+    //             this.d3Graph.call(updateGraph)
+    //     });
+    //     };
+    //   }
     SetHighlightNodes(index){
         var ans = CheckDirectNodes(index,this.props.data.BFSinput[index]);
         // console.log("hhh",this.props.data.highlight_nodes[index]);
@@ -222,9 +259,22 @@ class Graph extends Component {
             
     }
      */
-    
+    SetHighlightRelatedNodes(){
+        console.log('graph line263')
+        if (this.state.HighlightRelatedNodes != []){
+            console.log('graph line264');
+            this.setState(
+            {
+                HighlightNodes:this.state.HighlightRelatedNodes
+            })
+        }
+    }
+
     render() {
-        //console.log("nodes = ", this.props.data.concept_relationship.nodes);
+        
+        console.log('graph line281',this.props.HighlightRelatedNodes)
+
+
         var nodes = this.props.data.concept_relationship.nodes.map( (node) => {
             try{
                 /*if(data_db.includes(node.name))
@@ -252,36 +302,40 @@ class Graph extends Component {
                         />
                         );
                 }
-                else*/ if(( this.props.src =="ApprovPanel" ) && (node.group==2) )
-                {
-                    console.log("group==1!")
-                    return (
+                // else*/ //if (node.group==2)//if(( this.props.src =="ApprovPanel" ) && (node.group==2) )
+                // {
+                //     console.log("group==1!")
+                //     return (
                
-                        <Node
-                            data={node}
-                            name={node.name}
-                            key={"node"+node.index}
-                            // enterNode = {enterNode}
-                            updateNode = {updateNode}
-                            // OpenDrawer = {(text) =>this.props.OpenDrawer(text)}
-                            SetHighlightNodes = {this.SetHighlightNodes}
-                            HighlightNodes = {this.state.HighlightNodes}
-                            ClearHoverConcept = {this.props.ClearHoverConcept}
-                            DirectNodes = {this.state.DirectNodes}
-                            HoverConceptIndex = {this.props.HoverConceptIndex}
-                            SetHoverConceptIndex={this.props.SetHoverConceptIndex}
-                            Path_ConceptIndex={this.props.Path_ConceptIndex} 
-                            SetPath_ConceptIndex={this.props.SetPath_ConceptIndex}
-                            ConceptRange={this.props.ConceptRange}
-                            HighlightNodeText={this.props.HighlightConceptIndex}
-                            BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
-                            SetHightlightWord={this.state.SetHightlightWord}
-                            updated={true}
-                        />
+                //         <Node
+                //             data={node}
+                //             name={node.name}
+                //             key={"node"+node.index}
+                //             // enterNode = {enterNode}
+                //             updateNode = {updateNode}
+                //             // OpenDrawer = {(text) =>this.props.OpenDrawer(text)}
+                //             SetHighlightNodes = {this.SetHighlightNodes}
+                //             HighlightNodes = {this.state.HighlightNodes}
+                //             SetNodeHovering = {this.SetNodeHovering}
+                //             ClearHoverConcept = {this.props.ClearHoverConcept}
+                //             DirectNodes = {this.state.DirectNodes}
+                //             HoverConceptIndex = {this.props.HoverConceptIndex}
+                //             SetHoverConceptIndex={this.props.SetHoverConceptIndex}
+                //             Path_ConceptIndex={this.props.Path_ConceptIndex} 
+                //             SetPath_ConceptIndex={this.props.SetPath_ConceptIndex}
+                //             ConceptRange={this.props.ConceptRange}
+                //             HighlightNodeText={this.props.HighlightConceptIndex}
+                //             BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
+                //             SetHightlightWord={this.state.SetHightlightWord}
+                //             updated={true}
+
+                //             //add card order, Nov JX
+                //             SetCard_ConceptIndex={this.props.SetCard_ConceptIndex}
+                //         />
                         
-                        );
+                //         );
     
-                }else{
+                // }else{
                     return(
                     <Node
                         data={node}
@@ -303,8 +357,12 @@ class Graph extends Component {
                         HighlightNodeText={this.props.HighlightConceptIndex}
                         BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
                         SetHightlightWord={this.props.SetHightlightWord}
+
+                        //add card order, Nov JX
+                        SetCard_ConceptIndex={this.props.SetCard_ConceptIndex}
+                        HighlightRelatedNodes = {this.props.HighlightRelatedNodes}
                     />)
-                }
+                
             }
             catch (err){
                 //console.log(err);
@@ -330,6 +388,9 @@ class Graph extends Component {
                         HighlightNodeText={this.props.HighlightConceptIndex}
                         BigCircleIndex={this.props.BigCircleIndex==null?this.props.Path_ConceptIndex:this.props.BigCircleIndex}
                         SetHightlightWord={this.props.SetHightlightWord}
+
+                        //add card order, Nov JX
+                            SetCard_ConceptIndex={this.props.SetCard_ConceptIndex}
                     />
                     
                     );

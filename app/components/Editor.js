@@ -126,10 +126,25 @@ class Editor extends Component {
       console.log("this.ref = ",this.ref);
     }; 
     onFocus(event, core){
-      console.log("On Focus!!");
+      var currentdate = new Date(); 
+        var datetime = "Editor Focused: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        console.log(datetime);
     };
     onBlur(event, core){
       console.log("on Blur!!");
+      var currentdate = new Date(); 
+        var datetime = "Editor Blurred: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        console.log(datetime);
     };
     componentDidUpdate(prevProps, prevState, snapshot){     //props.content stands for the key to be highlight
                                                             // unless it's " ", " " means that nothing 
@@ -185,28 +200,37 @@ class Editor extends Component {
     var userId = this.props.userId;
     var concept = this.props.searchInfo;
     var cardId = this.props.editingCardId;
-    
-    if(this.props.cardEditing==false){
+
+    var currentdate = new Date(); 
+    var datetime = "Save Pressed: " + currentdate.getDate() + "/"
+            + (currentdate.getMonth()+1)  + "/" 
+            + currentdate.getFullYear() + " @ "  
+            + currentdate.getHours() + ":"  
+            + currentdate.getMinutes() + ":" 
+            + currentdate.getSeconds();
+    console.log(datetime);
+
+    if(this.props.cardEditing==false){ //new cardsaving
       
-      var sendBackEnd='https://conceptmap-backend.herokuapp.com/SaveEditor/';
+      var sendBackEnd='http://0.0.0.0:5000/SaveEditor/';
       sendBackEnd = sendBackEnd+concept+"&"+userId+"&"+content;
       fetch(sendBackEnd)     //跟後端連結去getJson
       .then(function (res) {
           console.log(res);
           return res.json();
       }).then(function(myJson) {
-          tmp.props.SetNewJson(myJson);
+          //tmp.props.SetNewJson(myJson);
           
-        tmp.props.SetVisJson(myJson);
+          tmp.props.SetVisJson(myJson);
           return myJson;
       });
       //console.log(this.props);
       //this.props.SetMapConsult("add");
       //mydatabase.ref('/save').set({contents});
     }
-    else{
+    else{ //cardediting
       
-      var sendBackEnd='https://conceptmap-backend.herokuapp.com/SaveCard/';
+      var sendBackEnd='http://0.0.0.0:5000/SaveCard/';
       sendBackEnd = sendBackEnd+concept+"&"+cardId+"&"+userId+"&"+content;
       console.log("sendBackEnd = ", sendBackEnd);
       fetch(sendBackEnd)
@@ -214,7 +238,7 @@ class Editor extends Component {
         console.log(res);
         return res.json();
     }).then(function(myJson) {
-        tmp.props.SetNewJson(myJson);
+        //tmp.props.SetNewJson(myJson);
         tmp.props.SetVisJson(myJson);
         return myJson;
     });     //跟後端連結去getJson

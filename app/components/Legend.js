@@ -78,14 +78,27 @@ class Legend extends Component {
         // console.log("Legend",this.props.Path_ConceptIndex);
         //Concept Node
         var scaleX = d3.scaleLinear()
-                 .range([6,15])
+                 .range([6,13])
                  .domain([0,5]);
 
         var ConceptNodes=[0,1,2,3,4,5];
+        var ConceptNodeColorIndex = [0,1,2];
+        var ConceptNodeColor = [{'color':'#555', 'text':"Video"},
+                                {'color':'#fed332','text':"Post"},
+                                 {'color':'#f06800','text':"Both"}];
         var ConceptNodesCircle = ConceptNodes.map( (index) => {
             return (
                 <g key={"SentcirclesLegend"+index}>
-                <circle cx={10+index*30} cy={40} r={scaleX(index)} fill="#555" opacity="0.4" > </circle>
+                <circle cx={10+index*30} cy={30} r={scaleX(index)} fill="#555" opacity="0.4" > </circle>
+                </g>
+            );
+        });
+        var ConceptNodeCircleGroup = ConceptNodeColorIndex.map((index)=>{
+            //var colorlabel = onceptNodeColor[index]['text']
+            return (
+                <g key={"color"+index}>
+                <circle cx={10+index*30*2} cy={80} fill={ConceptNodeColor[index]['color']} opacity='0.4' r={10}>  </circle>
+                <text x={25+index*60} y="85" class="small">{ConceptNodeColor[index]['text']}</text>
                 </g>
             );
         });
@@ -120,11 +133,12 @@ class Legend extends Component {
                                 {/* <div ><hr></hr></div> */}
                                 <div style={styles.ColorLegend}>
                                     {/* <Typography style={styles.heading2}>Concept Nodes</Typography> */}
-                                    <svg height="80" width="200">
-                                    <text   y="15" fill="black">Term Frequency</text>
+                                    <svg height="100" width="200">
+                                    <text   y="10" fill="black">Term Frequency</text>
                                     {ConceptNodesCircle}
-                                    <text   y="75" fill="#888888">{(this.props.ConceptRange[0]/this.props.ConceptRange[2]).toFixed(2)}</text>
-                                    <text x="145" y="75" fill="#888888">{(this.props.ConceptRange[1]/this.props.ConceptRange[2]).toFixed(2)}</text>
+                                    {ConceptNodeCircleGroup}
+                                    <text   y="60" fill="#888888">{(this.props.ConceptRange[0]/this.props.ConceptRange[2]).toFixed(2)}</text>
+                                    <text x="145" y="60" fill="#888888">{(this.props.ConceptRange[1]/this.props.ConceptRange[2]).toFixed(2)}</text>
                                     </svg>
                                     {/* <div ><hr></hr></div> */}
                                 </div>

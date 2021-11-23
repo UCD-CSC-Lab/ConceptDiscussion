@@ -74,6 +74,7 @@ class Node extends Component {
         this.NodeRadius = this.NodeRadius.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
         //this.handleHighlight = this.handleHighlight.bind(this);
+
     }
 
     componentDidMount() {
@@ -107,10 +108,10 @@ class Node extends Component {
         
     }
 
-
+    
 
     handleClick(e) {
-        //console.log("[click],conceptMapNode",",",this.props.data.name,",",this.props.data.index);
+        console.log("[click],conceptMapNode",",",this.props.data.name,",",this.props.data.index);
         //console.log(this.pros);
         // d3.select(ReactDOM.findDOMNode(this)).select('text')
         // .transition()
@@ -123,7 +124,10 @@ class Node extends Component {
         this.setState({
             anchorEl: ReactDOM.findDOMNode(this),
         });
+
         this.props.SetPath_ConceptIndex("add", this.props.data.index);
+        this.props.SetCard_ConceptIndex("order by index", this.props.data.index);
+
     };
     handleClose() {
         // console.log("unclick",ReactDOM.findDOMNode(this));
@@ -138,6 +142,8 @@ class Node extends Component {
         this.setState({
             anchorEl: null,
         });
+        this.props.SetCard_ConceptIndex("clear", null);
+
 
     };
 
@@ -168,7 +174,7 @@ class Node extends Component {
         //console.log("hover mode!!");
         this.setState({hovering:true});
         this.props.SetHoverConceptIndex(this.props.data.index);
-        this.props.SetHighlightNodes(this.props.data.index);
+        this.props.SetHighlightNodes(this.props.data.index); 
         
         this.props.SetNodeHovering(true);
     };
@@ -204,7 +210,9 @@ class Node extends Component {
     //欲修改Node顏色，於此區塊修改
     render() {
 
-        //console.log(this.props.SetPath_ConceptIndex);
+        
+
+
         if (this.props.Path_ConceptIndex == null) {
             var NodeOpacityValue = this.props.HighlightNodes.includes(this.props.data.index) ? 1 : 0.4;
         } else {
@@ -212,6 +220,14 @@ class Node extends Component {
         }
 
         // var NodeColor =  this.props.HighlightNodes.includes(this.props.data.index)? "#009FCC":"#555" ;
+        //console.log(this.props.SetPath_ConceptIndex);
+        if (this.props.data.group == 2) {
+            var NodeColor = "#fed332";
+        }
+        else if (this.props.data.group == 3){
+            var NodeColor = "#f06800";
+        }
+        else {var NodeColr = '#555'}
 
         if (this.props.Path_ConceptIndex == this.props.data.index) {        //Click Node
             var NodeColor = "#444444";
@@ -227,26 +243,34 @@ class Node extends Component {
             } else if (this.props.HighlightNodes.includes(this.props.data.index)) {
                 var NodeColor = "#009FCC";
             } else {
-                var NodeColor = "#555";
+                //var NodeColor = "#555";
             }
         }
         if (this.props.SetPath_ConceptIndex == false) {
             var NodeColor = "#AFC700";
             //console.log("fixing line ...");
+            NodeColor = "#009FCC"
         }
-        if (this.props.updated == true) {
-            var NodeColor = "#FF0000";
+        
+
+        if (this.props.HighlightRelatedNodes.length != 0){
+            if (this.props.HighlightRelatedNodes.includes(this.props.data.index)) {
+                console.log(this.props.data.index)
+                var NodeColor = "#009FCC";
+            }
         }
+
         
         return (
             <g className='node' >
                 {/* <circle ref="dragMe" onMouseOver={thi(s.handle.bind(this)}/> */}
                 {
                     
-                        console.log((this.props.data.index==0)&&"nodeColor = ", NodeColor)
+                        //console.log((this.props.data.index==0)&&"nodeColor = ", NodeColor)
                 }
                 <circle ref="dragMe"
                     onClick={this.handleClick.bind(this)}
+
                     onMouseOver={this.handleHover.bind(this)}
                     // 應該要綁定一個事件是當用戶觸發某個狀態 會從新繪圖 e.g. mouse over
                     //onMouseOver={this.handleHighlight.bind(this)} 

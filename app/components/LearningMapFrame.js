@@ -66,7 +66,10 @@ class LearningMapFrame extends Component {
             MapConsult: false,
             cardEditing:false,
             editingCardId:"",
-            editorContent:""
+            editorContent:"",
+
+            Card_ConceptIndex: null,
+            HighlightRelatedNodes:[],
             };
         this.SetEditorContent = this.SetEditorContent.bind(this);
         this.SetHoverConceptIndex = this.SetHoverConceptIndex.bind(this);
@@ -80,6 +83,10 @@ class LearningMapFrame extends Component {
         // Adding words hightlighting functions by YHT
         this.SetHightlightWord = this.SetHightlightWord.bind(this);
         this.SetCardEdit = this.SetCardEdit.bind(this);
+
+        //Add card order, Nov JX
+        this.SetCard_ConceptIndex = this.SetCard_ConceptIndex.bind(this);
+        this.SetHighlightRelatedNodes = this.SetHighlightRelatedNodes.bind(this);
     }
     SetEditorContent(content){
         this.setState({editorContent:content});
@@ -146,6 +153,7 @@ class LearningMapFrame extends Component {
         });
     };
     SetPopoverIndexes(method, index) {
+
         if (method == "add") {
             if (this.state.PopoverIndexes.includes(index) == false) {
                 this.setState({
@@ -172,10 +180,35 @@ class LearningMapFrame extends Component {
             console.log("[close] ConceptDetailPanel");
             this.setState({
                 Path_ConceptIndex: null,
-                BigCircleIndex: null
+                BigCircleIndex: null,
+
             });
         }
     }
+    //Nov JX
+    SetCard_ConceptIndex(method, index){
+        if (method == 'order by index'){
+            console.log('cards ordered by index. from learningMap', index);
+            this.setState({
+                Card_ConceptIndex: index
+            });
+
+        } else if (method == 'clear'){
+            console.log('cards ordered by normal order.');
+            this.setState({
+                Card_ConceptIndex: null
+            });
+        }
+    }
+    SetHighlightRelatedNodes(relatednodes_list){
+        
+        this.setState({HighlightRelatedNodes: relatednodes_list})
+        console.log('line204 learningmapframe', relatednodes_list)
+        
+
+
+    }
+
     SetMapConsult(method){
         if (method == "add"){
             /*     正式的讓後端去取db資料，算出新的Json檔
@@ -213,10 +246,10 @@ class LearningMapFrame extends Component {
     }
 
     render() {
-        console.log(this.props.data.VideoSequence_ConceptInfo);
+        //console.log(this.props.data.VideoSequence_ConceptInfo);
         var HighlightConceptTextIndex = this.state.HoverVideoIndex == null ? [] : this.props.data.VideoSequence_ConceptInfo[this.state.HoverConceptIndex][this.state.HoverVideoIndex];
         // console.log("windowheight",window.innerHeight);
-        console.log (this.props.data);
+        //console.log ('data in learningmapframe line240', this.props.data);
         return (
             <div style={styles.container}>
                 {/* {this.props.data.search_info.key} */}
@@ -250,6 +283,12 @@ class LearningMapFrame extends Component {
                         DirectNodesAtIndex = {this.props.DirectNodesAtIndex}
                         SetDirectNodesAtIndex = {this.props.SetDirectNodesAtIndex}
                         SetHighlightNodesAtIndex = {this.props.SetHighlightNodesAtIndex}
+
+                        //nov JX
+                        SetCard_ConceptIndex={this.SetCard_ConceptIndex}
+                        HighlightRelatedNodes = {this.state.HighlightRelatedNodes}
+                        HighlightRelatedNodes_onoff = {this.state.HighlightRelatedNodes_onoff}
+                        //key={this.state.HighlightRelatedNodes}
                     />
                 </div>
                 
@@ -261,13 +300,16 @@ class LearningMapFrame extends Component {
                             searchInfo = {this.props.data.search_info.key}
                             SetCardEdit = {this.SetCardEdit}
                             editingCardId = {this.state.editingCardId}
-                            cardEditing = {this.state.cardEditing}/>
+                            cardEditing = {this.state.cardEditing}
+                            Card_ConceptIndex={this.state.Card_ConceptIndex}
+                            SetHighlightRelatedNodes = {this.SetHighlightRelatedNodes}
+                            key={this.state.Card_ConceptIndex}/>
                     </div>
                     <div style = {styles.Editor}>
                     <Editor content = {this.state.content}
                             userId={this.props.userId}
                             SetMapConsult = {this.SetMapConsult}
-                            SetNewJson = {this.props.SetNewJson}
+                            // SetNewJson = {this.props.SetNewJson}
                             searchInfo = {this.props.data.search_info.key}
                             SetNewCardContent = {this.SetNewCardContent}
                             SetCardEdit = {this.SetCardEdit}
@@ -295,14 +337,16 @@ class LearningMapFrame extends Component {
                     SetProgress = {this.props.SetProgress} 
                     SetNewCardContent = {this.SetNewCardContent}
                     SetVideoId = {this.props.SetVideoId} 
+
+                    SetCard_ConceptIndex={this.SetCard_ConceptIndex}
                 />
                 <MapApprovPanel 
                     data={this.props.data}
                     MapConsult={this.state.MapConsult}
                     SetMapConsult={this.SetMapConsult}
                     SetVisJson = {this.props.SetVisJson}
-                    SetNewJson = {this.props.SetNewJson}   
-                    NewJson = {this.props.NewJson}
+                    //SetNewJson = {this.props.SetNewJson}   
+                    //NewJson = {this.props.NewJson}
                 />
                 <Notification open={this.state.Path_ConceptIndex == null} />
             </div>

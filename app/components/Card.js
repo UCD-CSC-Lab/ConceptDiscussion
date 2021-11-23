@@ -24,15 +24,20 @@ if (!firebase.apps.length) {
 class Card extends Component {
     constructor(props) {
         super(props);
+
         this.handleEdit = this.handleEdit.bind(this);
         //this.handleSave = this.handleSave.bind(this);
         this.ThumbOnClick = this.ThumbOnClick.bind(this);
         this.handleResize = this.handleResize.bind(this);
+
+        this.handleNodeHighlight = this.handleNodeHighlight.bind(this);
+
         this.ref = React.createRef();
         this.state = {
                         content:this.props.content,
                         windowWidth:window.innerWidth,
-                    thumbColor:"disabled"};
+                    thumbColor:"disabled",
+                    highlightRelatedNode_onoff: 0};
         }
 
     handleResize(e){
@@ -53,6 +58,14 @@ class Card extends Component {
         this.props.SetCardEdit(this.props.cardId);     //key is the cardId
         this.props.SetEditorContent(this.props.content);
         this.props.SetCardEdit(true, this.props.cardId);
+        var currentdate = new Date(); 
+        var datetime = "Edit Pressed: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        console.log(datetime);
     }
     /*handleSave(){
         this.ref.current.disabled();
@@ -63,6 +76,14 @@ class Card extends Component {
     handleCancel(){
         this.props.SetCardEdit("");
         this.props.SetCardEdit(false, this.props.cardId);
+        var currentdate = new Date(); 
+        var datetime = "Cancel Pressed: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        console.log(datetime);
     }
     componentDidUpdate(prevProps) {
         if (this.props.id !== prevProps.id) {        
@@ -72,12 +93,21 @@ class Card extends Component {
     ThumbOnClick(){
         if(this.state.thumbColor =="disabled"){
             var thumbColor ="primary";
+            this.props.handleThumbsCnt(this.props.cardId, 'add');
         }else{
             var thumbColor ="disabled";
+            this.props.handleThumbsCnt(this.props.cardId, 'minus');
         }
-        var sendBackEnd='https://conceptmap-backend.herokuapp.com/LikeCard/'+this.props.concept+"&"+this.props.cardId;
-        console.log("LIKE", sendBackEnd);
-        fetch(sendBackEnd);
+        //var sendBackEnd='http://0.0.0.0:5000/LikeCard/'+this.props.concept+"&"+this.props.cardId;
+        var currentdate = new Date(); 
+        var datetime = "Thumb Pressed: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        console.log(datetime);
+        //fetch(sendBackEnd+'&'+thumbColor);
         this.setState({thumbColor});
     }
     renderThumbCnt(){
@@ -87,23 +117,42 @@ class Card extends Component {
             return this.props.thumbsCnt;
         }
     }
+
+    // handleNodeHighlight(){
+
+    //     this.props.handleNodeHighlight(this.props.cardId); 
+    // }
+    handleNodeHighlight(){
+        if (this.state.highlightRelatedNode_onoff == 0){
+            this.props.handleNodeHighlight(this.props.cardId);
+            this.setState({highlightRelatedNode_onoff: 1})
+        }
+        else if (this.state.highlightRelatedNode_onoff == 1){
+            this.props.handleNodeHighlight([])
+            this.setState({highlightRelatedNode_onoff: 0})
+
+        }
+         
+    }
+
     render(){
         var tmp = this;
-const styles = ({
-    fullCard:{
-      width: tmp.props.style.ul.width-40,
-      border: '1px solid rgba(0.7,0.7,0.7, 0.7)',
-      borderRadius: '5px',
-      margin:' 10px 5px',
-      padding: '4px',
-    }
-  });
+        const styles = ({
+            fullCard:{
+              width: tmp.props.style.ul.width-40,
+              border: '1px solid rgba(0.7,0.7,0.7, 0.7)',
+              borderRadius: '5px',
+              margin:' 10px 5px',
+              padding: '4px',
+            }
+          });
+        let btn_name = this.state.highlightRelatedNode_onoff ? "Unshow Related Concepts" : "Show Related Concepts";
             return (
                 <div style={styles.fullCard}>
                     <div className='cardContent'>
                         <div className='cardText'>
-                            <h4>{this.props.userId}</h4>
-                            <p style={styles.content}>{this.props.content}</p>
+                            <h5>{this.props.userId}</h5>
+                            <p style={styles.content}><small>{this.props.content}</small></p>
                         </div>
                     </div>
                     <div>
@@ -124,6 +173,13 @@ const styles = ({
                         >
                             Delete
                         </button>}
+                        <button
+                            onClick={this.handleNodeHighlight}
+                            disabled={this.props.cardEditing}
+                            className="btn btn btn-info btn-sm m-2"
+                        >
+                             {btn_name}
+                        </button>
                         {(this.props.cardEditing) && (this.props.editingCardId==this.props.cardId)&&<button onClick={()=>this.handleCancel()}
                                                     className="btn btn-danger btn-sm m-2">
                                                 Cancel

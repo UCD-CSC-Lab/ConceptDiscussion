@@ -84,6 +84,7 @@ class ConceptDetailPanel extends Component {
     }
     CloseOnClick(){
         this.props.SetPath_ConceptIndex("clear",null);
+        this.props.SetCard_ConceptIndex("clear",null);
     }
     render() {
 

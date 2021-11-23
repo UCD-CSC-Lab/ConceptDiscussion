@@ -42,12 +42,12 @@ function beforunload(event) { event = event ? event : (window.event ? window.eve
   var cy = event.clientY || event.target.event.clientY;
   var ak = event.altKey || event.target.event.altKey; 
   if (cy < 0 || ak) { 
-  return "確定要離開本頁面嗎？"; }
+  return "Are you sure you want to leave this page?"; }
   } 
   else {
   // Firefox、Chrome
   var nodeName = event.currentTarget.document.activeElement.nodeName; 
-  if (nodeName!="A") { return "確定要離開本頁面嗎？"; } } } 
+  if (nodeName!="A") { return "Are you sure you want to leave this page?"; } } } 
 
     
 
@@ -85,7 +85,7 @@ class App extends React.Component {
     this.OpenDrawer = this.OpenDrawer.bind(this);
     this.CloseDrawer = this.CloseDrawer.bind(this);
     this.SetVisJson = this.SetVisJson.bind(this);
-    this.SetNewJson = this.SetNewJson.bind(this);
+    //this.SetNewJson = this.SetNewJson.bind(this);
   }
   SetHoverConceptIndexAtIndex(HoverConceptIndexAtIndex){
     this.setState({HoverConceptIndexAtIndex});
@@ -106,11 +106,11 @@ class App extends React.Component {
     this.setState({VisJson : json});
     console.log("VisJson setted from ", this.state.VisJson, " to ", json);
   }
-  SetNewJson(json){
-    console.log("NewJson setted from ", this.state.NewJson, " to ", json);
-    this.setState({NewJson : json});
-  }
-
+  // SetNewJson(json){
+  //   console.log("NewJson setted from ", this.state.NewJson, " to ", json);
+  //   this.setState({NewJson : json});
+  // }
+  
 
   SetProgress(progress,json){
     // console.log("p,k",progress,json);
@@ -121,7 +121,7 @@ class App extends React.Component {
       this.setState({
         Progress: progress,
         VisJson : json,
-        NewJson : json
+        //NewJson : json
       });
     }
   }
@@ -174,7 +174,7 @@ class App extends React.Component {
                 SetSearchHistory={this.SetSearchHistory}
                 />
               <MenuDrawer  
-                SetNewJson = {this.SetNewJson}
+                //SetNewJson = {this.SetNewJson}
                 open = {this.state.MenuOpened} 
                 SetProgress = {this.SetProgress}  
                 SearchHistory={this.state.SearchHistory} 
@@ -203,6 +203,7 @@ class App extends React.Component {
         </div>
       );
     }else if(this.state.Progress==3){
+
       return(
         <div style={{userSelect: "none"}}>
           <MuiThemeProvider>
@@ -216,8 +217,8 @@ class App extends React.Component {
                             OpenDrawer={(text) =>this.OpenDrawer(text)}
                             SetProgress = {this.SetProgress} 
                             SetVisJson = {this.SetVisJson}
-                            SetNewJson = {this.SetNewJson}
-                            NewJson = {this.state.NewJson}
+                            //SetNewJson = {this.SetNewJson}
+                            //NewJson = {this.state.NewJson}
                             SetVideoId = {this.SetVideoId}
                             HighlightNodesAtIndex = {this.state.HighlightNodesAtIndex}
                             DirectNodesAtIndex = {this.state.DirectNodesAtIndex}
@@ -226,7 +227,7 @@ class App extends React.Component {
                             SetHoverConceptIndexAtIndex = {this.SetHoverConceptIndexAtIndex}
                             SetDirectNodesAtIndex = {this.SetDirectNodesAtIndex}
                             SetHighlightNodesAtIndex = {this.SetHighlightNodesAtIndex}
- 
+                            //key={this.state.VisJson.concept_relationship.nodes}
           />
           <Dialog
             fullScreen
@@ -251,8 +252,8 @@ class App extends React.Component {
                               OpenDrawer={(text) =>this.OpenDrawer(text)}
                               SetVisJson = {this.SetVisJson}
                               userId={this.state.userId}
-                              SetNewJson = {this.SetNewJson}
-                              NewJson = {this.state.NewJson}
+                              //SetNewJson = {this.SetNewJson}
+                              //NewJson = {this.state.NewJson}
                               SetProgress = {this.SetProgress}
                               videoId = {this.state.videoId}
                               SetVideoId = {this.SetVideoId}
@@ -281,5 +282,4 @@ class App extends React.Component {
 
     
 
-
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('app'));
